@@ -991,8 +991,12 @@ int ftdi_usb_close(struct ftdi_context *ftdi)
         ftdi_error_return(-3, "ftdi context invalid");
 
     if (ftdi->usb_dev != NULL)
+    {
         if (libusb_release_interface(ftdi->usb_dev, ftdi->interface) < 0)
             rtn = -1;
+        if (libusb_attach_kernel_driver(ftdi->usb_dev, ftdi->interface) != 0)
+            rtn = -1;
+    }
 
     ftdi_usb_close_internal (ftdi);
 
